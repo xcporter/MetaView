@@ -9,13 +9,19 @@ class StructureListener : KotlinParserBaseListener() {
             mods.any { it.contains("abstract") } -> ClassType.ABSTRACT
             mods.any { it.contains("enum") } -> ClassType.ENUM
             mods.any { it.contains("data") } -> ClassType.DATA
+            mods.any { it.contains("sealed") } -> ClassType.SEALED
             else -> ClassType.CLASS
         }
+        val enumValues = ctx?.enumClassBody()?.enumEntries()?.enumEntry()?.map {
+            it.simpleIdentifier().text
+        }
+
 
         classes.add(ClassModel(ctx?.simpleIdentifier()?.text,
             ctx?.delegationSpecifiers()?.text?.split(",") ?: listOf(),
             type,
-            mods
+            mods,
+            enumValues ?: listOf()
         ))
     }
 //

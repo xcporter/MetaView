@@ -3,7 +3,7 @@ fun List<ClassModel>.umlGen() : String {
     val acc = mutableListOf<String>("```plantuml", "@startuml")
 
     acc.addAll(
-        this.map { it.kind.template(it.name ?: "") }
+        this.map { it.kind.template(it) }
     )
 
     acc.addAll(
