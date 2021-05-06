@@ -8,7 +8,7 @@ import java.io.File
 
 val classes = mutableListOf<ClassModel>()
 
-val target = File("/Users/poralexc/Documents/Kotlin/efasParallel/core/src/commonMain")
+val target = File("/Users/poralexc/Documents/Kotlin/efasParallel/admin")
     .walkTopDown()
     .filter { it.extension == "kt" }
 val walker = ParseTreeWalker()

@@ -4,6 +4,18 @@ import com.xcporter.KotlinParserBaseListener
 class StructureListener : KotlinParserBaseListener() {
     override fun enterClassDeclaration(ctx: KotlinParser.ClassDeclarationContext?) {
         val mods = listOfNotNull(ctx?.modifiers()?.text)
+        val delegation = ctx?.delegationSpecifiers()?.text?.split(",")
+            //                    todo(react mode)
+//                  todo(ignore rule, use list contains)
+            ?.flatMap {
+                it
+                    .replace("\\(.*\\)".toRegex(), "")
+                    .replace("RComponent<", "")
+                    .replace(">", "")
+                    .split(",")
+            }
+            ?.filter { it != "RProps" && it != "RState" && it != "View"}
+
         val type = when {
             ctx?.INTERFACE() != null -> ClassType.INTERFACE
             mods.any { it.contains("abstract") } -> ClassType.ABSTRACT
@@ -15,13 +27,27 @@ class StructureListener : KotlinParserBaseListener() {
         val enumValues = ctx?.enumClassBody()?.enumEntries()?.enumEntry()?.map {
             it.simpleIdentifier().text
         }
+//        Get properties from primary constructor
+        val properties = ctx?.primaryConstructor()?.classParameters()?.classParameter()?.map {
+            it?.simpleIdentifier()?.text to it?.type()?.text
+        }?.toMap()?.filter { it.key?.contains("class")?.not() ?: false }
+//            otherwise check members
+            ?: ctx?.classBody()?.classMemberDeclarations()?.classMemberDeclaration()
+                ?.mapNotNull {
+                    it?.declaration()?.propertyDeclaration()?.variableDeclaration()
+                    ?.let {
+                        it.simpleIdentifier()?.text to it.type()?.text
+                    }
+                }?.toMap()
+        println(properties)
 
 
         classes.add(ClassModel(ctx?.simpleIdentifier()?.text,
-            ctx?.delegationSpecifiers()?.text?.split(",") ?: listOf(),
+            delegation ?: listOf(),
             type,
             mods,
-            enumValues ?: listOf()
+            properties ?: mapOf(),
+            enumEntries = enumValues ?: listOf()
         ))
     }
 //

@@ -10,7 +10,7 @@ fun List<ClassModel>.umlGen() : String {
         this.flatMap { clazz ->
             clazz.delegation
                 .filterNotNull()
-                .map { "\"${it.removeSuffix("()")}\" <|--- ${clazz.name}" }
+                .map { "\"${it}\" <|--- ${clazz.name}" }
         }
     )
 

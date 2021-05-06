@@ -1,7 +1,4 @@
-
-
-```plantuml
-@startuml
-class porpus <<(D, #DFAB25)>>
-@enduml
-```
+TODO
+- Delegation ignore
+- split type arguments consistently
+- functional hierarchies
