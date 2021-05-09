@@ -15,15 +15,15 @@ plugins {
 ```groovy
 
 generateUml {
-//    folder to analyse
-    target: File // default: project directory
-    
 //    Add a closure for each chart you'd like to create
     classTree {}
     functionReceiverTree {}
 
 //    Each chart can be customized
     classTree {
+        //    folder to analyse
+        target: File // default: project directory
+        
         outputDir: File // default: build directory + docs
         outputFile: String // output file name
 

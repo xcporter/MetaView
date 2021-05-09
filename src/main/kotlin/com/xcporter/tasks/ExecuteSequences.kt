@@ -22,7 +22,7 @@ open class ExecuteSequences : DefaultTask() {
             when(it) {
                 is AnalysisType.ClassTree -> {
                     TreeParser.currentChart = it
-                    TreeParser.parseTarget(ext.target)
+                    TreeParser.parseTarget(it.target)
                     File(it.outputDir.path + "/" + (it.outputFile ?: "chart${ext.analysisSequence.indexOf(it).takeIf{ it != 0 } ?: ""}.md"))
                         .writeText(TreeParser.classes.umlGen(it.style ?: listOf()))
                 }
