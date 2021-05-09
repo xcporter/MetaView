@@ -4,6 +4,7 @@ import org.gradle.api.Project
 import java.io.File
 
 sealed class AnalysisType(val project: Project) {
+    var target: File = project.projectDir
     var style: List<String>? = null
     var outputDir: File = File(project.buildDir.path + "/docs").apply { this.mkdirs() }
     var outputFile: String? = null
