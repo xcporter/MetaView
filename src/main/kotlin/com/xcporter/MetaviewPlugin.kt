@@ -9,7 +9,13 @@ const val menuGroup = "MetaView"
 class MetaviewPlugin : Plugin<Project> {
     override fun apply(proj: Project) {
         proj.extensions.create("generateUml", MetaviewExtension::class.java, proj)
-        proj.tasks.register("generateUmlDiagrams", ExecuteSequences::class.java)
+
+
+        proj.afterEvaluate {
+            val ext = it.metaviewExtension()
+            if (ext.analysisSequence.isNotEmpty()) proj.tasks.register("generateUmlDiagrams", ExecuteSequences::class.java)
+        }
+
     }
 
 }

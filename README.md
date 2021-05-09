@@ -55,7 +55,17 @@ generateUml {
 }
 ```
 
-TODO
+## Generate Uml
+
+Once you've added some chart closured in your build.gradle file,
+a task called `generateUmlDiagrams` will be added to your gradle project under the documentation group. 
+
+Charts will be saved in your project's build directory by default, in a folder called
+'docs'.
+
+
+
+## TODO
 - [X] Delegation ignore
 - [X] split type arguments consistently
 - [ ] functional hierarchies
