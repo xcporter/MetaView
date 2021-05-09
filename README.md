@@ -6,8 +6,7 @@ A gradle plugin based on ANTLR to generate UML diagrams from kotlin source  code
 
 ```groovy
 plugins {
-    //not yet published to gradle plugin portal!
-    id 'com.xcporter.metaview' version '0.0.1'
+    id "com.xcporter.metaview" version "0.0.1"
 }
 ```
 
