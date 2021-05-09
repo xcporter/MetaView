@@ -1,3 +1,5 @@
+package com.xcporter
+
 data class ClassModel (val name: String?,
                        val delegation: List<String?> = listOf(),
                        val kind: ClassType = ClassType.CLASS,

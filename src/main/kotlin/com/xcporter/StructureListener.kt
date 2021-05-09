@@ -1,20 +1,29 @@
-import com.xcporter.KotlinParser
-import com.xcporter.KotlinParserBaseListener
+package com.xcporter
 
-class StructureListener : KotlinParserBaseListener() {
+import com.xcporter.TreeParser.currentChart
+
+class StructureListener() : KotlinParserBaseListener() {
     override fun enterClassDeclaration(ctx: KotlinParser.ClassDeclarationContext?) {
         val mods = listOfNotNull(ctx?.modifiers()?.text)
         val delegation = ctx?.delegationSpecifiers()?.text?.split(",")
-            //                    todo(react mode)
-//                  todo(ignore rule, use list contains)
+//                apply split delegate
             ?.flatMap {
-                it
-                    .replace("\\(.*\\)".toRegex(), "")
-                    .replace("RComponent<", "")
-                    .replace(">", "")
-                    .split(",")
+                if((currentChart as? AnalysisType.ClassTree)?.splitDelegates?.contains(it.substringBefore("<")) == true) {
+                    it
+                        .replace("\\(.*\\)".toRegex(), "")
+                        .split("<")
+                        .drop(1)
+                        .first().replace(">", "")
+                        .split(",")
+                } else {
+                    listOf(it.replace("\\(.*\\)".toRegex(), ""))
+                }
             }
-            ?.filter { it != "RProps" && it != "RState" && it != "View"}
+//                apply ignore delegates
+            ?.mapNotNull {
+                if ((currentChart as? AnalysisType.ClassTree)?.ignoreDelegates?.contains(it) == true) null
+                else it
+            }
 
         val type = when {
             ctx?.INTERFACE() != null -> ClassType.INTERFACE
@@ -42,13 +51,15 @@ class StructureListener : KotlinParserBaseListener() {
         println(properties)
 
 
-        classes.add(ClassModel(ctx?.simpleIdentifier()?.text,
-            delegation ?: listOf(),
-            type,
-            mods,
-            properties ?: mapOf(),
-            enumEntries = enumValues ?: listOf()
-        ))
+        TreeParser.classes.add(
+            ClassModel(ctx?.simpleIdentifier()?.text,
+                delegation ?: listOf(),
+                type,
+                mods,
+                properties ?: mapOf(),
+                enumEntries = enumValues ?: listOf()
+            )
+        )
     }
 //
 //    override fun enterDelegationSpecifier(ctx: KotlinParser.DelegationSpecifierContext?) {

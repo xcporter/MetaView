@@ -1,4 +1,4 @@
-// Generated from /Users/poralexc/Documents/Kotlin/metaView/src/main/antlr/KotlinParser.g4 by ANTLR 4.9.1
+// Generated from /Users/poralexc/Documents/Kotlin/metaView/src/com.xcporter.main/antlr/KotlinParser.g4 by ANTLR 4.9.1
 package com.xcporter;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
