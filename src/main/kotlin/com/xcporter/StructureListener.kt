@@ -8,8 +8,7 @@ import com.xcporter.TreeParser.functions
 class StructureListener() : KotlinParserBaseListener() {
     override fun enterClassDeclaration(ctx: KotlinParser.ClassDeclarationContext?) {
         val mods = listOfNotNull(ctx?.modifiers()?.text)
-//        todo fix parameterized types
-        val delegation = ctx?.delegationSpecifiers()?.text?.split(",")
+        val delegation = ctx?.delegationSpecifiers()?.children?.map { it.text }
 //                apply split delegate
             ?.flatMap {
                 if((currentChart as? AnalysisType.ClassTree)?.splitDelegates?.contains(it.substringBefore("<")) == true) {

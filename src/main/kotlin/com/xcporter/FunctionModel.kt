@@ -9,5 +9,6 @@ data class FunctionModel(val name: String?,
 
 fun FunctionModel.toUML() : String = """
     |class "${if(typeParameters.isNotEmpty()) "<${typeParameters.joinToString(", ")}>" else ""}$name" <<(f, #1CDF58)>> {
-    |    ${parameters.map {"${it.key}: ${it.value}"}.joinToString("\n\t")}${returnType?.let { "\n__\nReturns $it" } ?: ""}
+    |    ${parameters.map {"${it.key}: ${it.value}"}.joinToString("\n\t")}
+    |__${returnType?.let { "\n$it" } ?: ""}
     |}""".trimMargin()
