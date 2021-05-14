@@ -20,6 +20,11 @@ open class MetaviewExtension(val proj: Project) {
         analysisSequence.add (obj)
     }
 
+    fun classTree(op: AnalysisType.ClassTree.()->Unit) {
+        val obj = AnalysisType.ClassTree(proj)
+        analysisSequence.add(obj.apply(op))
+    }
+
     fun functionTree(op: Closure<Unit>) {
         val obj = AnalysisType.FunctionTree(proj)
         op.apply {
@@ -28,5 +33,10 @@ open class MetaviewExtension(val proj: Project) {
             call()
         }
         analysisSequence.add (obj)
+    }
+
+    fun functionTree(op: AnalysisType.FunctionTree.() -> Unit) {
+        val obj = AnalysisType.FunctionTree(proj)
+        analysisSequence.add(obj.apply(op))
     }
 }
