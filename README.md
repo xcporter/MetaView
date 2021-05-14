@@ -51,14 +51,34 @@ generateUml {
 
 ```
 
-### Example
+### Examples
 
 ```kotlin
+//  Minimum default
+generateUml {
+    classTree {}
+}
+```
+
+```kotlin
+//    Select only one submodule from multiplatform project
 generateUml {
     classTree {
-        outputFile = "classHierarchy.md"
-        ignoreDelegates = ["DefaultTask"]
-        splitDelegates = ["Plugin"]
+        outputFile = "common.md"
+        target = file(projectDir.path + "/src/commonMain")
+    }
+    functionTree {
+        target = file(projectDir.path + "/src/commonMain")
+    }
+}
+```
+
+```kotlin
+//    Ignore Generic parents in a Kotlin React project
+generateUml {
+    classTree {
+        splitDelegates = ["RComponent"]
+        ignoreDelegates = ["RProps", "RState"]
         style = ["skinparam BackgroundColor LightBlue"]
     }
 }
@@ -66,7 +86,7 @@ generateUml {
 
 ## Generate Uml
 
-Once you've added some chart closured in your build.gradle file,
+Once you've added some chart closures in your build.gradle file,
 a task called `generateUmlDiagrams` will be added to your gradle project under the documentation group. 
 
 Charts will be saved in your project's build directory by default, in a folder called
@@ -80,6 +100,8 @@ Charts will be saved in your project's build directory by default, in a folder c
 - [X] functional hierarchies
 - [X] convert to gradle plugin
 - [X] style input
+- [ ] ignore function by kind
+- [ ] global properties
 
 ### Sample generated diagram:
 
