@@ -9,21 +9,39 @@ data class ClassModel (val name: String?,
 
 enum class ClassType(val template: (ClassModel)->String) {
     ENUM({
-        "enum \"${it.name}\" {\n\t${it.enumEntries.filterNotNull().joinToString("\n\t")}${if (it.modifiers.any { it?.contains("Serializable") == true } ) "\n__\n\t+ serializer()" else ""}\n}"
+        """enum "${it.name}" {
+            |    ${it.enumEntries.filterNotNull().joinToString("\n\t")}${if (it.modifiers.any { it?.contains("Serializable") == true }) "\n__\n\t+ serializer()" else ""}
+            |}
+            """.trimMargin()
     }),
     INTERFACE({
-        "interface \"${it.name}\" {\n\t${it.properties.map { "${it.key} ${it.value}"}.joinToString("\n\t")}${if (it.modifiers.any { it?.contains("Serializable") == true } ) "\n__\n\t+ serializer()" else ""}\n}"
+        """interface "${it.name}" {
+            |    ${it.properties.map { "${it.key}: ${it.value}"}.joinToString("\n\t")}${if (it.modifiers.any { it?.contains("Serializable") == true } ) "\n__\n\t+ serializer()" else ""}
+            |}
+            """.trimMargin()
     }),
     ABSTRACT({
-        "abstract \"${it.name}\" {\n\t${it.properties.map { "${it.key} ${it.value}"}.joinToString("\n\t")}${if (it.modifiers.any { it?.contains("Serializable") == true } ) "\n__\n\t+ serializer()" else ""}\n}"
+        """abstract "${it.name}" {
+            |    ${it.properties.map { "${it.key}: ${it.value}"}.joinToString("\n\t")}${if (it.modifiers.any { it?.contains("Serializable") == true } ) "\n__\n\t+ serializer()" else ""}
+            |}
+            """.trimMargin()
     }),
     CLASS({
-        "class \"${it.name}\" {\n\t${it.properties.map { "${it.key} ${it.value}"}.joinToString("\n\t")}${if (it.modifiers.any { it?.contains("Serializable") == true } ) "\n__\n\t+ serializer()" else ""}\n}"
+        """class "${it.name}" {
+            |    ${it.properties.map { "${it.key}: ${it.value}"}.joinToString("\n\t")}${if (it.modifiers.any { it?.contains("Serializable") == true } ) "\n__\n\t+ serializer()" else ""}
+            |}
+            """.trimMargin()
     }),
     DATA({
-        "class \"${it.name}\" <<(D, #DFAB25)>> {\n\t${it.properties.map { "${it.key} ${it.value}"}.joinToString("\n\t")}${if (it.modifiers.any { it?.contains("Serializable") == true } ) "\n__\n\t+ serializer()" else ""}\n}"
+        """class "${it.name}" <<(D, #EFBA68)>> {
+            |    ${it.properties.map { "${it.key}: ${it.value}"}.joinToString("\n\t")}${if (it.modifiers.any { it?.contains("Serializable") == true } ) "\n__\n\t+ serializer()" else ""}
+            |}
+            """.trimMargin()
     }),
     SEALED({
-        "class \"${it.name}\" <<(S, #D9335B)>> {\n\t${it.properties.map { "${it.key} ${it.value}"}.joinToString("\n\t")}${if (it.modifiers.any { it?.contains("Serializable") == true } ) "\n__\n\t+ serializer()" else ""}\n}"
+        """class "${it.name}" <<(S, #D9335B)>> {
+            |    ${it.properties.map { "${it.key}: ${it.value}"}.joinToString("\n\t")}${if (it.modifiers.any { it?.contains("Serializable") == true } ) "\n__\n\t+ serializer()" else ""}
+            |}
+            """.trimMargin()
     }),
 }
