@@ -13,6 +13,8 @@ class MetaviewPlugin : Plugin<Project> {
 
         proj.afterEvaluate {
             val ext = it.metaviewExtension()
+            TreeParser.verbose = ext.verbose
+            TreeParser.deeplyVerbose = ext.deeplyVerbose
             if (ext.analysisSequence.isNotEmpty()) proj.tasks.register("generateUmlDiagrams", ExecuteSequences::class.java)
         }
 
