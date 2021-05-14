@@ -6,7 +6,7 @@ A gradle plugin based on ANTLR to generate UML diagrams from kotlin source  code
 
 ```groovy
 plugins {
-    id "com.xcporter.metaview" version "0.0.1"
+    id "com.xcporter.metaview" version "0.0.3"
 }
 ```
 
@@ -17,7 +17,7 @@ plugins {
 generateUml {
 //    Add a closure for each chart you'd like to create
     classTree {}
-    functionReceiverTree {}
+    functionTree {}
 
 //    Each chart can be customized
     classTree {
@@ -36,6 +36,16 @@ generateUml {
     // Split parameterized types into children when inherited from
     //      useful for mapping projects using kotlin react wrappers      
         splitDelegates: List<String>
+    }
+    
+    functionTree {
+        //    folder to analyse
+        target: File // default: project directory
+
+        outputDir: File // default: build directory + docs
+        outputFile: String // output file name
+
+        style: List<String> // add valid plantuml skinparams
     }
 }
 
@@ -67,7 +77,7 @@ Charts will be saved in your project's build directory by default, in a folder c
 ## TODO
 - [X] Delegation ignore
 - [X] split type arguments consistently
-- [ ] functional hierarchies
+- [X] functional hierarchies
 - [X] convert to gradle plugin
 - [X] style input
 

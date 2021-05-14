@@ -23,11 +23,14 @@ open class ExecuteSequences : DefaultTask() {
                 is AnalysisType.ClassTree -> {
                     TreeParser.currentChart = it
                     TreeParser.parseTarget(it.target)
-                    File(it.outputDir.path + "/" + (it.outputFile ?: "chart${ext.analysisSequence.indexOf(it).takeIf{ it != 0 } ?: ""}.md"))
+                    File(it.outputDir.path + "/" + (it.outputFile ?: "classes${ext.analysisSequence.indexOf(it).takeIf{ it != 0 } ?: ""}.md"))
                         .writeText(TreeParser.classes.umlGen(it.style ?: listOf()))
                 }
-                is AnalysisType.FunctionReceiverTree -> {
-                    TODO("FunctionReceiverTree: This sequence is not yet implemented")
+                is AnalysisType.FunctionTree -> {
+                    TreeParser.currentChart = it
+                    TreeParser.parseTarget(it.target)
+                    File(it.outputDir.path + "/" + (it.outputFile ?: "functions${ext.analysisSequence.indexOf(it).takeIf{ it != 0 } ?: ""}.md"))
+                        .writeText(TreeParser.functions.umlGen(it.style ?: listOf()))
                 }
             }
         }

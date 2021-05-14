@@ -9,6 +9,7 @@ open class MetaviewExtension(val proj: Project) {
 
     var verbose : Boolean = false
     var deeplyVerbose: Boolean = false
+
     fun classTree(op: Closure<Unit>) {
         val obj = AnalysisType.ClassTree(proj)
         op.apply {
@@ -19,7 +20,13 @@ open class MetaviewExtension(val proj: Project) {
         analysisSequence.add (obj)
     }
 
-    fun functionReceiverTree(op: AnalysisType.FunctionReceiverTree.()-> AnalysisType) {
-        TODO()
+    fun functionTree(op: Closure<Unit>) {
+        val obj = AnalysisType.FunctionTree(proj)
+        op.apply {
+            resolveStrategy = DELEGATE_FIRST
+            delegate = obj
+            call()
+        }
+        analysisSequence.add (obj)
     }
 }

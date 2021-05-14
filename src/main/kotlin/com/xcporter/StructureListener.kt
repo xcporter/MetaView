@@ -1,10 +1,14 @@
 package com.xcporter
 
+import com.xcporter.TreeParser.classes
 import com.xcporter.TreeParser.currentChart
+import com.xcporter.TreeParser.deeplyVerbose
+import com.xcporter.TreeParser.functions
 
 class StructureListener() : KotlinParserBaseListener() {
     override fun enterClassDeclaration(ctx: KotlinParser.ClassDeclarationContext?) {
         val mods = listOfNotNull(ctx?.modifiers()?.text)
+//        todo fix parameterized types
         val delegation = ctx?.delegationSpecifiers()?.text?.split(",")
 //                apply split delegate
             ?.flatMap {
@@ -48,7 +52,7 @@ class StructureListener() : KotlinParserBaseListener() {
                         it.simpleIdentifier()?.text to it.type()?.text
                     }
                 }?.toMap()
-        println(properties)
+        if (deeplyVerbose) println(properties)
 
 
         TreeParser.classes.add(
@@ -61,16 +65,28 @@ class StructureListener() : KotlinParserBaseListener() {
             )
         )
     }
-//
-//    override fun enterDelegationSpecifier(ctx: KotlinParser.DelegationSpecifierContext?) {
-//        println("delegation: ${ ctx?.text }")
-//    }
 
-//    override fun enterClassModifier(ctx: KotlinParser.ClassModifierContext?) {
-//        println("modifier: ${ ctx?.text }")
-//    }
-//
-//    override fun exitKotlinFile(ctx: KotlinParser.KotlinFileContext?) {
-//        classes.forEach(::println)
-//    }
+    override fun enterFunctionDeclaration(ctx: KotlinParser.FunctionDeclarationContext?) {
+        val mods = listOfNotNull(ctx?.modifiers()?.text)
+        val receivers = ctx?.receiverType()?.typeReference()?.userType()?.simpleUserType()?.mapNotNull { it.simpleIdentifier()?.text } ?: listOf()
+        val returnType = ctx?.type()?.text
+        val typeParameters = ctx?.typeParameters()?.typeParameter()?.mapNotNull { it.simpleIdentifier()?.text + ": " + it.type()?.typeReference()?.userType()?.simpleUserType()?.map { it.simpleIdentifier()?.text }?.firstOrNull()  } ?: listOf()
+        val params = ctx?.functionValueParameters()?.functionValueParameter()?.map { it.parameter()?.simpleIdentifier()?.text to it.parameter()?.type()?.text }?.toMap() ?: mapOf()
+
+        TreeParser.functions.add(
+            FunctionModel(
+                ctx?.simpleIdentifier()?.text,
+                receivers,
+                typeParameters,
+                returnType,
+                mods,
+                params
+            )
+        )
+    }
+
+    override fun exitKotlinFile(ctx: KotlinParser.KotlinFileContext?) {
+        if (deeplyVerbose) classes.forEach(::println)
+        if (deeplyVerbose) functions.forEach(::println)
+    }
 }

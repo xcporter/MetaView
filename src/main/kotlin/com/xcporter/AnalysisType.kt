@@ -16,7 +16,10 @@ sealed class AnalysisType(val project: Project) {
         override fun toString(): String = "${style?.joinToString(" ")}"
     }
 
-    class FunctionReceiverTree(project: Project) : AnalysisType(project) {
-        var ignoreReceivers: List<String> = listOf()
+    class FunctionTree(project: Project) : AnalysisType(project) {
+        var ignoreDelegates: List<String> = listOf()
+        var memberFunctions : Boolean = false
+        var freeFunctions : Boolean = false
+        var receiverFunctions : Boolean = true
     }
 }
