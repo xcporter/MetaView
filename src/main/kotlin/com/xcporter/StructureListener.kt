@@ -8,7 +8,11 @@ import com.xcporter.TreeParser.functions
 class StructureListener() : KotlinParserBaseListener() {
     override fun enterClassDeclaration(ctx: KotlinParser.ClassDeclarationContext?) {
         val mods = listOfNotNull(ctx?.modifiers()?.text)
-        val delegation = ctx?.delegationSpecifiers()?.children?.map { it.text }
+        val delegation = ctx?.delegationSpecifiers()?.children
+            ?.map { it.text }
+            ?.filter{ it != "," }
+            ?.map { it.replace("\\(.*\\)".toRegex(), "") }
+            .also { if (deeplyVerbose && it != null) println(it) }
 //                apply split delegate
             ?.flatMap {
                 if((currentChart as? AnalysisType.ClassTree)?.splitDelegates?.contains(it.substringBefore("<")) == true) {
@@ -19,7 +23,7 @@ class StructureListener() : KotlinParserBaseListener() {
                         .first().replace(">", "")
                         .split(",")
                 } else {
-                    listOf(it.replace("\\(.*\\)".toRegex(), ""))
+                    listOf(it)
                 }
             }
 //                apply ignore delegates
@@ -61,6 +65,60 @@ class StructureListener() : KotlinParserBaseListener() {
                 mods,
                 properties ?: mapOf(),
                 enumEntries = enumValues ?: listOf()
+            )
+        )
+    }
+
+    override fun enterObjectDeclaration(ctx: KotlinParser.ObjectDeclarationContext?) {
+        val mods = listOfNotNull(ctx?.modifiers()?.text)
+        val delegation = ctx?.delegationSpecifiers()?.children
+            ?.map { it.text }
+            ?.filter{ it != "," }
+            ?.map { it.replace("\\(.*\\)".toRegex(), "") }
+            .also { if (deeplyVerbose && it != null) println(it) }
+//                apply split delegate
+            ?.flatMap {
+                if((currentChart as? AnalysisType.ClassTree)?.splitDelegates?.contains(it.substringBefore("<")) == true) {
+                    it
+                        .replace("\\(.*\\)".toRegex(), "")
+                        .split("<")
+                        .drop(1)
+                        .first().replace(">", "")
+                        .split(",")
+                } else {
+                    listOf(it)
+                }
+            }
+//                apply ignore delegates
+            ?.mapNotNull {
+                if ((currentChart as? AnalysisType.ClassTree)?.ignoreDelegates?.contains(it) == true) null
+                else it
+            }
+
+        val properties = ctx?.classBody()?.classMemberDeclarations()?.classMemberDeclaration()?.mapNotNull {
+            it.declaration()?.propertyDeclaration()?.variableDeclaration()
+                ?.let {
+                    it.simpleIdentifier()?.text to it.type()?.text
+                }
+        }?.toMap()
+
+        if (deeplyVerbose) println(properties)
+
+        val methods = ctx?.classBody()?.classMemberDeclarations()?.classMemberDeclaration()?.mapNotNull {
+            it.declaration()?.functionDeclaration()
+                ?.let {
+                    "${it.simpleIdentifier().text}()"
+                }
+        }
+
+        TreeParser.classes.add(
+            ClassModel(ctx?.simpleIdentifier()?.text,
+                delegation ?: listOf(),
+                ClassType.OBJECT,
+                mods,
+                properties ?: mapOf(),
+                listOf(),
+                methods ?: listOf()
             )
         )
     }
