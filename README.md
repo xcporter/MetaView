@@ -6,7 +6,7 @@ A gradle plugin based on ANTLR to generate UML diagrams from kotlin source  code
 
 ```groovy
 plugins {
-    id "com.xcporter.metaview" version "0.0.4"
+    id "com.xcporter.metaview" version "0.0.5"
 }
 ```
 
@@ -101,8 +101,16 @@ Charts will be saved in your project's build directory by default, in a folder c
 - [X] convert to gradle plugin
 - [X] style input
 - [ ] ignore function by kind
-- [ ] global properties
+- [ ] parse global properties
+- [ ] Granular api for including/ignoring objects
+- [ ] Java 11 compatability
+- [ ] Themes
 
 ### Sample generated diagram:
 
 ![example](./Examples/example1.png)
+
+## Under the hood
+
+Most of the heavy lifting is done by [ANTLR](https://www.antlr.org/), which generates parsers in Java based on the
+[kotlin grammar spec](https://kotlinlang.org/docs/reference/grammar.html)
